@@ -1,7 +1,5 @@
 # 🌌 CryptoWatch
 
-![CryptoWatch Preview](https://via.placeholder.com/1200x600/0a0a0c/8b5cf6?text=CryptoWatch+Dashboard)
-
 **CryptoWatch** es un moderno dashboard de criptomonedas en tiempo real, construido para monitorear el pulso financiero de los activos digitales más populares usando la API WebSocket de Binance. 
 
 Este proyecto fue **creado por Jehison Bustamante** como una demostración técnica de interfaces de alto rendimiento, manejo de estado complejo y diseño premium.
