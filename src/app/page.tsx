@@ -193,6 +193,10 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      <footer className="mt-16 text-center text-sm text-zinc-600">
+        Created by <span className="text-zinc-400 font-medium hover:text-purple-400 transition-colors">Jehison bustamante</span>
+      </footer>
     </main>
   );
 }
