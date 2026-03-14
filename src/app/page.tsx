@@ -22,7 +22,6 @@ const StarIcon = ({ filled, onClick }: { filled: boolean; onClick: () => void })
   </svg>
 );
 
-// Skeleton loader para cada tarjeta individual
 const CryptoCardSkeleton = () => (
   <div className="bg-[#0a0a0c] p-6 rounded-2xl border border-zinc-800 shadow-lg flex flex-col justify-between h-[160px] animate-pulse">
     <div className="flex items-center justify-between">
@@ -43,7 +42,7 @@ const CryptoCardSkeleton = () => (
 );
 
 export default function Home() {
-  const { cryptos, loading } = useBinance();
+  const { cryptos, loading, status } = useBinance();
   const [favorites, setFavorites] = useState<string[]>([]);
   const [mounted, setMounted] = useState(false);
 
@@ -70,21 +69,38 @@ export default function Home() {
     });
   };
 
+  const isDisconnected = status === 'reconnecting' || status === 'error';
+
   return (
     <main className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto">
-      <header className="mb-10 text-center md:text-left flex flex-col md:flex-row md:justify-between md:items-end">
-        <div>
+      <header className="mb-10 flex flex-col md:flex-row md:justify-between md:items-end">
+        <div className="text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-2 md:mb-3 tracking-tight">
             Crypto<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-indigo-500">Watch</span>
           </h1>
           <p className="text-zinc-400 text-base md:text-lg">Mercado en tiempo real • Binance Stream</p>
+        </div>
+        
+        {/* Indicador de Estado de Conexión */}
+        <div className="mt-6 md:mt-0 flex items-center justify-center md:justify-end gap-3">
+          <div className="flex items-center gap-2 bg-[#0a0a0c] px-4 py-2 rounded-full border border-zinc-800 shadow-sm">
+            <div className={`w-2.5 h-2.5 rounded-full ${
+              status === 'connected' ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 
+              status === 'reconnecting' ? 'bg-yellow-500 animate-bounce' : 
+              'bg-zinc-500'
+            }`}></div>
+            <span className="text-sm text-zinc-300 font-medium">
+              {status === 'connected' ? 'Señal en Vivo' : 
+               status === 'reconnecting' ? 'Reconectando...' : 
+               'Conectando...'}
+            </span>
+          </div>
         </div>
       </header>
 
       <section id="dashboard">
         {loading || Object.keys(cryptos).length === 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {/* Animación fluida usando Skeletons mientras carga WebSocket */}
             {ORDER.map((sym) => <CryptoCardSkeleton key={sym} />)}
           </div>
         ) : (
@@ -92,16 +108,11 @@ export default function Home() {
             {ORDER.map((sym) => {
               const coin = cryptos[`${sym}USDT`];
               
-              // Si la moneda no ha llegado todavía, usamos un skeleton intermedio para no romper la grilla
               if (!coin) return <CryptoCardSkeleton key={sym} />;
 
               const isFav = favorites.includes(coin.symbol);
-              
-              // Mapeo simple del historial para Recharts { value: 123 }
               const chartData = coin.history.map((val, i) => ({ index: i, value: val }));
 
-              // Calculamos mínimo y máximo para que la línea ocupe todo el mini-gráfico proporcialmente
-              // Añadimos un pequeño padding (1%) para que no se pegue exactamente a los bordes
               const minPrice = Math.min(...coin.history);
               const maxPrice = Math.max(...coin.history);
               const padding = (maxPrice - minPrice) * 0.01;
@@ -110,7 +121,8 @@ export default function Home() {
                 <div 
                   key={coin.symbol} 
                   className={`bg-[#0a0a0c] pt-5 px-5 pb-3 rounded-2xl border transition-all duration-300 shadow-lg flex flex-col justify-between h-[160px]
-                    ${coin.isUp ? 'border-purple-500/30' : 'border-rose-500/30'}
+                    ${isDisconnected ? 'border-zinc-800 grayscale-[0.6] opacity-70' : 
+                      coin.isUp ? 'border-purple-500/30' : 'border-rose-500/30'}
                     ${isFav && mounted ? 'ring-2 ring-yellow-500/20' : ''}
                     hover:scale-[1.02] hover:bg-[#121214] overflow-hidden group`}
                 >
@@ -120,7 +132,7 @@ export default function Home() {
                          <img 
                             src={`https://assets.coincap.io/assets/icons/${coin.symbol.toLowerCase()}@2x.png`} 
                             alt={coin.symbol} 
-                            className="w-full h-full object-contain drop-shadow-md"
+                            className={`w-full h-full object-contain drop-shadow-md ${isDisconnected ? 'opacity-50' : ''}`}
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                               const parent = e.currentTarget.parentElement;
@@ -147,14 +159,15 @@ export default function Home() {
                     <p 
                       key={coin.lastUpdate} 
                       className={`text-xl md:text-2xl font-mono font-semibold tracking-tight 
-                        ${coin.isUp ? 'text-purple-400 animate-blink-up' : 'text-rose-400 animate-blink-down'}`}
+                        ${isDisconnected ? 'text-zinc-500' :
+                          coin.isUp ? 'text-purple-400 animate-blink-up' : 'text-rose-400 animate-blink-down'}`}
                     >
                       ${coin.price}
                     </p>
                   </div>
 
-                  {/* Sparkline (Mini Gráfico) que va de lado a lado por debajo */}
-                  <div className="h-[30px] w-full mt-1 -mx-2 opacity-50 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className={`h-[30px] w-full mt-1 -mx-2 transition-opacity duration-300 z-0
+                    ${isDisconnected ? 'opacity-20' : 'opacity-50 group-hover:opacity-100'}`}>
                     {chartData.length > 1 && (
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={chartData}>
@@ -165,11 +178,10 @@ export default function Home() {
                           <Line 
                             type="monotone" 
                             dataKey="value" 
-                            // Cambiamos el color de la línea si va subiendo o bajando
-                            stroke={coin.isUp ? "#a855f7" : "#fb7185"} 
-                            strokeWidth={2} 
+                            stroke={isDisconnected ? "#52525b" : (coin.isUp ? "#a855f7" : "#fb7185")} 
+                            strokeWidth={isDisconnected ? 1 : 2} 
                             dot={false}
-                            isAnimationActive={false} // Desactivamos la animación de render para que no salte locamente cada 1s
+                            isAnimationActive={false}
                           />
                         </LineChart>
                       </ResponsiveContainer>
