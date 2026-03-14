@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌌 CryptoWatch
 
-## Getting Started
+![CryptoWatch Preview](https://via.placeholder.com/1200x600/0a0a0c/8b5cf6?text=CryptoWatch+Dashboard)
 
-First, run the development server:
+**CryptoWatch** es un moderno dashboard de criptomonedas en tiempo real, construido para monitorear el pulso financiero de los activos digitales más populares usando la API WebSocket de Binance. 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Este proyecto fue **creado por Jehison Bustamante** como una demostración técnica de interfaces de alto rendimiento, manejo de estado complejo y diseño premium.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚡ Características Principales (Features)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **📈 Precios en Tiempo Real (WebSockets)**: Conexión directa al Stream Combinado de Binance para mostrar los precios tick a tick sin depender de solicitudes REST.
+- **✨ Animaciones Reactivas ("Blinks")**: Los precios "parpadean" sutilmente en púrpura (alza) o rojo (baja) cada vez que el mercado se mueve, dando una sensación de aplicación "viva".
+- **📊 Sparklines Reactivos**: Cada tarjeta muestra un mini-gráfico (construido con `recharts`) que dibuja el historial de los últimos 30 ticks de precio para visualizar la tendencia micro-segundo a segundo sin sobrecargar el DOM.
+- **⭐ Persistencia de Preferencias**: Integración ligera de `localStorage` para marcar y guardar tus monedas favoritas, re-cargándolas instantáneamente entre sesiones.
+- **🛡️ Resiliencia de Conexión (Edge Cases)**: 
+  - Manejo inteligente de desconexiones y caídas de Wi-Fi con auto-reconexión (`auto-reconnect fallback`).
+  - Indicador visual perimetral de estado de conexión (En Vivo / Reconectando).
+  - Estado visual de "Skeletons" al cargar, y filtros de escala de grises al detectar pérdida de conectividad.
+- **🎨 Diseño UI/UX Premium**: Implementado puramente con Tailwind CSS, ofreciendo transiciones suaves, modo oscuro por defecto y un diseño tipo mosaico súper responsivo (Grilla dinámica de 3x2 a 1x1).
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tecnologías Adentro
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **[Next.js 16 (React 19)](https://nextjs.org/)**: Framework core y enrutador.
+- **[Tailwind CSS v4](https://tailwindcss.com/)**: Motor de estilos y animaciones `postcss`.
+- **[Recharts](https://recharts.org/en-US/)**: Para las gráficas sparkline ultra-rápidas en formato SVG.
+- **[TypeScript](https://www.typescriptlang.org/)**: Seguridad de tipos a lo largo de los hooks y componentes.
+- **[Binance WebSocket API](https://github.com/binance/binance-spot-api-docs/blob/master/web-socket-streams.md)**: Proveedor de datos de latencia cero.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🚀 Cómo correr el proyecto localmente
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Este es un proyecto [Next.js](https://nextjs.org/). Primero, asegúrate de tener `Node.js` instalado.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Clona este repositorio o descarga el código.
+2. Abre la terminal en el directorio del proyecto y ejecuta la instalación de dependencias:
+   ```bash
+   npm install
+   ```
+3. Levanta el entorno de desarrollo:
+   ```bash
+   npm run dev
+   ```
+4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la magia.
+
+---
+
+## 👨‍💻 Autor
+
+Creado y diseñado con pasión por **Jehison Bustamante**.
+- [LinkedIn](#) *(Enlaza tu perfil aquí)*
+- [GitHub](#) *(Enlaza tu perfil aquí)*
