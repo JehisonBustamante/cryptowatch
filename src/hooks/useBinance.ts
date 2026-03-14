@@ -4,6 +4,8 @@ export type CoinData = {
   symbol: string;
   price: string;
   isUp: boolean; // true si subió de precio o se mantuvo, false si bajó
+  lastUpdate: number; // Para activar animaciones cuando llegue un nuevo tick
+  history: number[]; // Histórico de los últimos 30 precios para el Sparkline
 };
 
 type CryptoState = {
@@ -13,43 +15,53 @@ type CryptoState = {
 // Top 6 monedas: La Selección de Oro
 export const SYMBOLS = ["btcusdt", "ethusdt", "solusdt", "bnbusdt", "fetusdt", "dogeusdt"];
 
-// Túnel combinado de Binance (stream?streams=...)
 const STREAM_URL = `wss://stream.binance.com:9443/stream?streams=${SYMBOLS.map(s => `${s}@ticker`).join('/')}`;
+
+// Función para formatear el precio estéticamente
+function formatPrice(price: number): string {
+  if (price >= 1000) {
+    return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  } else if (price >= 1) {
+    return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 3 });
+  } else {
+    return price.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 6 });
+  }
+}
 
 export const useBinance = () => {
   const [cryptos, setCryptos] = useState<CryptoState>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Abrimos el túnel
     const ws = new WebSocket(STREAM_URL);
 
-    // 2. Escuchamos cuando llega un mensaje
     ws.onmessage = (event) => {
       const parsed = JSON.parse(event.data);
       
-      // Binance manda los datos dentro del objeto "data" en streams combinados
       if (parsed.data) {
         const data = parsed.data;
-        const symbol = data.s; // Ej: 'BTCUSDT'
-        const currentPrice = parseFloat(data.c); // Precio de cierre actual ('c' = current close price)
+        const symbol = data.s; 
+        const currentPrice = parseFloat(data.c); 
 
         setCryptos(prev => {
-          const prevPriceStr = prev[symbol]?.price;
-          const prevPrice = prevPriceStr ? parseFloat(prevPriceStr) : currentPrice;
+          const prevRawPrice = prev[symbol] ? parseFloat(prev[symbol].price.replace(/,/g, '')) : currentPrice;
           
           let isUp = prev[symbol]?.isUp ?? true;
-          // Si el precio actual es mayor, brilla púrpura. Si es menor, rojizo.
-          if (currentPrice > prevPrice) isUp = true;
-          else if (currentPrice < prevPrice) isUp = false;
+          if (currentPrice > prevRawPrice) isUp = true;
+          else if (currentPrice < prevRawPrice) isUp = false;
+
+          // Mantenemos los últimos 30 precios. Si es el primer precio, inicializamos un array.
+          const currentHistory = prev[symbol]?.history || [];
+          const newHistory = [...currentHistory, currentPrice].slice(-30);
 
           return {
             ...prev,
             [symbol]: {
-              symbol: symbol.replace('USDT', ''), // Limpiamos para dejar 'BTC', 'ETH', etc.
-              // Formateamos para que monedas como Doge tengan 4 decimales, y BTC 2
-              price: currentPrice >= 10 ? currentPrice.toFixed(2) : currentPrice.toFixed(4),
-              isUp: isUp
+              symbol: symbol.replace('USDT', ''), 
+              price: formatPrice(currentPrice),
+              isUp: isUp,
+              lastUpdate: Date.now(),
+              history: newHistory
             }
           };
         });
@@ -58,12 +70,10 @@ export const useBinance = () => {
       }
     };
 
-    // 3. Manejamos errores
     ws.onerror = (error) => {
-      console.error("Mano, se cayó el túnel:", error);
+      console.error("Error en WebSocket de Binance:", error);
     };
 
-    // 4. Limpiamos la conexión cuando te vas de la página (¡Evitamos el ban de IP y memory leaks!)
     return () => {
       ws.close();
     };
