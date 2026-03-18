@@ -4,6 +4,8 @@
 
 Este proyecto fue **creado por Jehison Bustamante** como una demostración técnica de interfaces de alto rendimiento, manejo de estado complejo y diseño premium.
 
+**🚀 [Ver en Vercel →](https://cryptowatch-vercel.vercel.app)** | **Deploy automático desde GitHub**
+
 ---
 
 ## ⚡ Características Principales (Features)
@@ -16,39 +18,126 @@ Este proyecto fue **creado por Jehison Bustamante** como una demostración técn
   - Manejo inteligente de desconexiones y caídas de Wi-Fi con auto-reconexión (`auto-reconnect fallback`).
   - Indicador visual perimetral de estado de conexión (En Vivo / Reconectando).
   - Estado visual de "Skeletons" al cargar, y filtros de escala de grises al detectar pérdida de conectividad.
-- **🎨 Diseño UI/UX Premium**: Implementado puramente con Tailwind CSS, ofreciendo transiciones suaves, modo oscuro por defecto y un diseño tipo mosaico súper responsivo (Grilla dinámica de 3x2 a 1x1).
+- **🎨 Diseño UI/UX Premium**: Implementado puramente con Tailwind CSS v4, ofreciendo transiciones suaves, modo oscuro por defecto y un diseño tipo mosaico súper responsivo (Grilla dinámica de 3x2 a 1x1).
+- **⚡ Optimizado para Vercel**: Desplegado automáticamente desde GitHub con preview deployments para cada PR.
 
 ---
 
 ## 🛠️ Tecnologías Adentro
 
-- **[Next.js 16 (React 19)](https://nextjs.org/)**: Framework core y enrutador.
+- **[Next.js 16.1 (React 19)](https://nextjs.org/)**: Framework core y enrutador optimizado.
 - **[Tailwind CSS v4](https://tailwindcss.com/)**: Motor de estilos y animaciones `postcss`.
-- **[Recharts](https://recharts.org/en-US/)**: Para las gráficas sparkline ultra-rápidas en formato SVG.
+- **[Recharts](https://recharts.org/en-US/)**: Gráficas sparkline ultra-rápidas en formato SVG.
 - **[TypeScript](https://www.typescriptlang.org/)**: Seguridad de tipos a lo largo de los hooks y componentes.
 - **[Binance WebSocket API](https://github.com/binance/binance-spot-api-docs/blob/master/web-socket-streams.md)**: Proveedor de datos de latencia cero.
+- **[Vercel](https://vercel.com)**: Plataforma de deploy con CI/CD automático.
 
 ---
 
 ## 🚀 Cómo correr el proyecto localmente
 
-Este es un proyecto [Next.js](https://nextjs.org/). Primero, asegúrate de tener `Node.js` instalado.
+Este es un proyecto [Next.js](https://nextjs.org/). Primero, asegúrate de tener `Node.js 18+` instalado.
 
-1. Clona este repositorio o descarga el código.
-2. Abre la terminal en el directorio del proyecto y ejecuta la instalación de dependencias:
+### Instalación
+
+1. Clona este repositorio:
+   ```bash
+   git clone https://github.com/tu-usuario/cryptowatch.git
+   cd cryptowatch
+   ```
+
+2. Instala dependencias:
    ```bash
    npm install
    ```
+
 3. Levanta el entorno de desarrollo:
    ```bash
    npm run dev
    ```
-4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la magia.
+
+4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
+
+### Scripts Disponibles
+
+- `npm run dev` - Levanta servidor de desarrollo
+- `npm run build` - Compila la aplicación para producción
+- `npm start` - Corre el servidor de producción
+- `npm run lint` - Ejecuta ESLint
+
+---
+
+## 🌐 Despliegue en Vercel
+
+Esta aplicación está optimizada para desplegar en **Vercel** con deploy automático desde GitHub.
+
+### Deploy Automático (Recomendado)
+
+1. Sube el código a un repositorio de GitHub
+2. Ve a [https://vercel.com](https://vercel.com)
+3. Conecta tu repositorio GitHub
+4. Vercel detectará Next.js automáticamente
+5. ¡Listo! Cada push a `main` desplegará automáticamente
+
+### URL de Ejemplo
+```
+https://cryptowatch-xxxxx.vercel.app
+```
+
+**Características en Vercel:**
+- ✅ Preview deployments para cada PR
+- ✅ Deploy automático en cada push
+- ✅ Certificado SSL automático
+- ✅ CDN global
+- ✅ Analytics en tiempo real
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+cryptowatch/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx          # Componente principal (dashboard)
+│   │   ├── layout.tsx        # Layout raíz
+│   │   └── globals.css       # Estilos globales (Tailwind v4)
+│   └── hooks/
+│       └── useBinance.ts     # Hook para WebSocket de Binance
+├── public/                   # Assets estáticos
+├── next.config.ts            # Configuración de Next.js
+├── tailwind.config.ts        # Configuración de Tailwind
+├── tsconfig.json             # Configuración de TypeScript
+└── package.json              # Dependencias
+```
 
 ---
 
 ## 👨‍💻 Autor
 
 Creado y diseñado con pasión por **Jehison Bustamante**.
-- [LinkedIn](#) *(Enlaza tu perfil aquí)*
-- [GitHub](#) *(Enlaza tu perfil aquí)*
+- 💼 [LinkedIn](https://linkedin.com) *(Actualiza con tu perfil)*
+- 🐙 [GitHub](https://github.com) *(Actualiza con tu perfil)*
+- 📧 Email: tu-email@example.com
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia MIT. Siéntete libre de usarlo, modificarlo y distribuirlo.
+
+---
+
+## 🤝 Contribuciones
+
+¡Las contribuciones son bienvenidas! Por favor, abre un issue o una pull request para sugerir mejoras.
+
+---
+
+## 📚 Recursos Útiles
+
+- [Next.js Docs](https://nextjs.org/docs)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+- [Binance API Docs](https://binance-docs.github.io/apidocs/)
+- [Vercel Docs](https://vercel.com/docs)
+- [React 19 Docs](https://react.dev)

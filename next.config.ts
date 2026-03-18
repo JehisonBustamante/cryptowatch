@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // React Compiler para optimizar renders
   reactCompiler: true,
-  output: 'standalone',
+  
+  // Seguridad: remover header X-Powered-By
+  poweredByHeader: false,
 };
 
 export default nextConfig;
