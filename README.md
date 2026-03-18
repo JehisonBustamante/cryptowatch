@@ -4,7 +4,7 @@
 
 Este proyecto fue **creado por Jehison Bustamante** como una demostración técnica de interfaces de alto rendimiento, manejo de estado complejo y diseño premium.
 
-**🚀 [Ver en Vercel →](https://cryptowatch-vercel.vercel.app)** | **Deploy automático desde GitHub**
+**🚀 [Ver en Vercel →](https://cryptowatch-lake.vercel.app)** | **Deploy automático desde GitHub**
 
 ---
 
@@ -42,7 +42,7 @@ Este es un proyecto [Next.js](https://nextjs.org/). Primero, asegúrate de tener
 
 1. Clona este repositorio:
    ```bash
-   git clone https://github.com/tu-usuario/cryptowatch.git
+   git clone https://github.com/JehisonBustamante/cryptowatch.git
    cd cryptowatch
    ```
 
@@ -116,9 +116,9 @@ cryptowatch/
 ## 👨‍💻 Autor
 
 Creado y diseñado con pasión por **Jehison Bustamante**.
-- 💼 [LinkedIn](https://linkedin.com) *(Actualiza con tu perfil)*
-- 🐙 [GitHub](https://github.com) *(Actualiza con tu perfil)*
-- 📧 Email: tu-email@example.com
+- 💼 [LinkedIn](www.linkedin.com/in/jehison-bustamante-molina-8b410521a)
+- 🐙 [GitHub](https://github.com/JehisonBustamante)
+- 📧 Email: [EMAIL_ADDRESS](jayjehisonbustamante@gmail.com)
 
 ---
 
