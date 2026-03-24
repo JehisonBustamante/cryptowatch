@@ -3,9 +3,14 @@ import { useState, useEffect } from 'react';
 export type CoinData = {
   symbol: string;
   price: string;
-  isUp: boolean; 
-  lastUpdate: number; 
-  history: number[]; 
+  isUp: boolean;
+  lastUpdate: number;
+  history: number[];
+  // 24h stats from Binance ticker
+  change24h?: string;   // P field: 24h price change percent
+  high24h?: string;     // h field: 24h high price
+  low24h?: string;      // l field: 24h low price
+  volume24h?: string;   // q field: 24h quote asset volume (in USDT)
 };
 
 type CryptoState = {
@@ -27,6 +32,13 @@ function formatPrice(price: number): string {
   }
 }
 
+function formatVolume(raw: number): string {
+  if (raw >= 1_000_000_000) return `$${(raw / 1_000_000_000).toFixed(2)}B`;
+  if (raw >= 1_000_000) return `$${(raw / 1_000_000).toFixed(2)}M`;
+  if (raw >= 1_000) return `$${(raw / 1_000).toFixed(2)}K`;
+  return `$${raw.toFixed(2)}`;
+}
+
 export const useBinance = () => {
   const [cryptos, setCryptos] = useState<CryptoState>({});
   const [loading, setLoading] = useState(true);
@@ -39,7 +51,7 @@ export const useBinance = () => {
 
     const connect = () => {
       if (!isMounted) return;
-      
+
       setStatus(prev => prev === 'connecting' ? 'connecting' : 'reconnecting');
       ws = new WebSocket(STREAM_URL);
 
@@ -51,20 +63,27 @@ export const useBinance = () => {
 
       ws.onmessage = (event) => {
         if (!isMounted) return;
-        
-        // Si por alguna razón recibimos mensajes pero el estado era error/reconnecting, lo forzamos a connected
-        setStatus('connected'); 
-        
+
+        setStatus('connected');
+
         const parsed = JSON.parse(event.data);
-        
+
         if (parsed.data) {
           const data = parsed.data;
-          const symbol = data.s; 
-          const currentPrice = parseFloat(data.c); 
+          const symbol: string = data.s;
+          const currentPrice = parseFloat(data.c);
+
+          // 24h extra fields from 24hr ticker stream
+          const change24h: string = parseFloat(data.P).toFixed(2);
+          const high24h: string = formatPrice(parseFloat(data.h));
+          const low24h: string = formatPrice(parseFloat(data.l));
+          const volume24h: string = formatVolume(parseFloat(data.q));
 
           setCryptos(prev => {
-            const prevRawPrice = prev[symbol] ? parseFloat(prev[symbol].price.replace(/,/g, '')) : currentPrice;
-            
+            const prevRawPrice = prev[symbol]
+              ? parseFloat(prev[symbol].price.replace(/,/g, ''))
+              : currentPrice;
+
             let isUp = prev[symbol]?.isUp ?? true;
             if (currentPrice > prevRawPrice) isUp = true;
             else if (currentPrice < prevRawPrice) isUp = false;
@@ -75,11 +94,15 @@ export const useBinance = () => {
             return {
               ...prev,
               [symbol]: {
-                symbol: symbol.replace('USDT', ''), 
+                symbol: symbol.replace('USDT', ''),
                 price: formatPrice(currentPrice),
-                isUp: isUp,
+                isUp,
                 lastUpdate: Date.now(),
-                history: newHistory
+                history: newHistory,
+                change24h,
+                high24h,
+                low24h,
+                volume24h,
               }
             };
           });
@@ -95,8 +118,6 @@ export const useBinance = () => {
       ws.onclose = () => {
         if (!isMounted) return;
         setStatus('reconnecting');
-        
-        // Intentar reconectar cada 3 segundos si se cae
         clearTimeout(reconnectTimeout);
         reconnectTimeout = setTimeout(connect, 3000);
       };
@@ -108,8 +129,7 @@ export const useBinance = () => {
       isMounted = false;
       clearTimeout(reconnectTimeout);
       if (ws) {
-        // Removemos los event listeners antes de cerrar para evitar llamadas extra
-        ws.onclose = null; 
+        ws.onclose = null;
         ws.close();
       }
     };
